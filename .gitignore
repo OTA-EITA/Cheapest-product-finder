@@ -1,0 +1,67 @@
+# Python関連
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# 仮想環境
+venv/
+ENV/
+env/
+
+# データベース
+*.db
+*.sqlite
+*.sqlite3
+
+# ログ
+*.log
+
+# 環境変数
+.env
+.env.*
+
+# IDEの設定
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS関連
+.DS_Store
+Thumbs.db
+
+# キャッシュディレクトリ
+.cache/
+.pytest_cache/
+
+# カバレッジレポート
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*,cover
+.hypothesis/
+
+# その他
+celerybeat-schedule
+celerybeat.pid

@@ -1,0 +1,75 @@
+name: cheapest_price_finder
+description: 複数の通販サイトから商品の最安値を簡単に比較できるアプリ
+
+# バージョン番号
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # UI関連
+  cupertino_icons: ^1.0.5
+  google_fonts: ^5.1.0
+  flutter_svg: ^2.0.7
+  shimmer: ^3.0.0
+  cached_network_image: ^3.2.3
+  fl_chart: ^0.63.0
+  barcode_scan2: ^4.2.4
+  flutter_barcode_scanner: ^2.0.0
+  
+  # 状態管理
+  provider: ^6.0.5
+  riverpod: ^2.3.6
+  flutter_riverpod: ^2.3.6
+  
+  # API通信
+  dio: ^5.2.1+1
+  json_annotation: ^4.8.1
+  freezed_annotation: ^2.2.0
+  
+  # ローカルストレージ
+  shared_preferences: ^2.1.2
+  sqflite: ^2.2.8+4
+  path_provider: ^2.0.15
+  
+  # 認証
+  flutter_secure_storage: ^8.0.0
+  
+  # ルーティング
+  go_router: ^10.0.0
+  
+  # その他ユーティリティ
+  intl: ^0.18.1
+  url_launcher: ^6.1.12
+  package_info_plus: ^4.0.2
+  connectivity_plus: ^4.0.1
+  
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.2
+  build_runner: ^2.4.6
+  json_serializable: ^6.7.0
+  freezed: ^2.3.5
+  flutter_launcher_icons: ^0.13.1
+  
+# Flutter設定
+flutter:
+  uses-material-design: true
+  
+  # アセット
+  assets:
+    - assets/images/
+    - assets/icons/
+    
+  # フォント
+  # fonts:
+  #   - family: Noto Sans JP
+  #     fonts:
+  #       - asset: assets/fonts/NotoSansJP-Regular.otf
+  #       - asset: assets/fonts/NotoSansJP-Bold.otf
+  #         weight: 700

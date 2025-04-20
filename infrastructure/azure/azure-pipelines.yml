@@ -1,0 +1,46 @@
+trigger:
+  - main
+
+variables:
+  - group: cheapest-price-finder-vars
+
+stages:
+- stage: Build
+  jobs:
+  - job: BuildBackend
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '3.10'
+    - script: |
+        python -m pip install --upgrade pip
+        pip install -r backend/requirements.txt
+      displayName: 'Install dependencies'
+    
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'azure-container-registry'
+        repository: 'cheapest-price-finder-backend'
+        command: 'buildAndPush'
+        Dockerfile: 'backend/Dockerfile'
+
+- stage: Deploy
+  jobs:
+  - deployment: DeployToAKS
+    pool:
+      vmImage: 'ubuntu-latest'
+    environment: 'production'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: Kubernetes@1
+            inputs:
+              connectionType: 'Azure Resource Manager'
+              azureSubscriptionEndpoint: 'azure-subscription'
+              azureResourceGroup: 'cheapest-price-finder-rg'
+              kubernetesCluster: 'cheapest-price-finder-aks'
+              command: 'apply'
+              arguments: '-f infrastructure/k8s/deployment.yml'

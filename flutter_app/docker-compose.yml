@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  flutter_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+      - flutter_cache:/root/.pub-cache
+    environment:
+      - DISPLAY=${DISPLAY}
+    command: run -d web-server --web-port=8080 --web-hostname=0.0.0.0
+
+volumes:
+  flutter_cache:

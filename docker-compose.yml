@@ -1,0 +1,72 @@
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: cheapest_price_finder
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d cheapest_price_finder"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app_network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    environment:
+      - PYTHONPATH=/app
+      - DATABASE_URL=postgresql://user:password@postgres:5432/cheapest_price_finder
+    command: >
+      bash -c "
+      echo 'Waiting for PostgreSQL...';
+      while ! pg_isready -h postgres -p 5432 -U user; do
+        echo 'Waiting for PostgreSQL to be ready...';
+        sleep 2;
+      done;
+      echo 'PostgreSQL is ready. Starting application...';
+      uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+      "
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - app_network
+
+  flutter_app:
+    build:
+      context: ./flutter_app
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./flutter_app:/app
+      - flutter_cache:/root/.pub-cache
+    environment:
+      - DISPLAY=${DISPLAY}
+    command: flutter run -d web-server --web-port=8080 --web-hostname=0.0.0.0
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - app_network
+
+volumes:
+  flutter_cache:
+  postgres_data:
+
+networks:
+  app_network:
+    driver: bridge

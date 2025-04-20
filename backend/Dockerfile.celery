@@ -1,0 +1,22 @@
+FROM python:3.10-slim
+
+# 作業ディレクトリの設定
+WORKDIR /app
+
+# システム依存関係のインストール
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    software-properties-common \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Pythonの依存関係をコピーとインストール
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# アプリケーションコードのコピー
+COPY . .
+
+# Celeryワーカーの実行
+CMD ["celery", "-A", "services.tasks", "worker", "--loglevel=info"]

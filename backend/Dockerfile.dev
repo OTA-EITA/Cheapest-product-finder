@@ -1,0 +1,44 @@
+# 開発環境用Dockerfile
+FROM python:3.11-slim-bullseye
+
+# 作業ディレクトリの設定
+WORKDIR /app
+
+# システム依存関係のインストール
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    postgresql-client \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# pipの最新版へのアップグレード
+RUN pip install --upgrade pip
+
+# Pythonの依存関係をコピー
+COPY requirements.txt .
+
+# 開発用依存関係の追加
+RUN pip install --no-cache-dir \
+    -r requirements.txt \
+    pytest \
+    pytest-cov \
+    ipython
+
+# アプリケーションコードのコピー
+COPY . .
+
+# 環境変数の設定
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV DATABASE_URL=postgresql://user:password@postgres:5432/cheapest_price_finder
+ENV REDIS_URL=redis://redis:6379/0
+
+# デバッグ用のスクリプトを追加
+COPY ./scripts/entrypoint.dev.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# エントリーポイントの設定
+ENTRYPOINT ["/entrypoint.sh"]
+
+# デフォルトコマンド
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

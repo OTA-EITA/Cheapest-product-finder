@@ -1,0 +1,17 @@
+[flake8]
+max-line-length = 120
+exclude = 
+    .nox,
+    .venv,
+    .git,
+    __pycache__,
+    *.pyc,
+    *.egg-info,
+    .cache,
+    .eggs
+
+# エラーコードの無視
+ignore = 
+    E203,  # スペースの周りの演算子に関する警告を無視
+    W503,  # 行継続に関する警告を無視
+    F401   # 未使用のインポートに関する警告を無視
