@@ -38,7 +38,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV=/home/eitafeir/src/cheapest-price-finder/backend/.venv
+VIRTUAL_ENV=~/src/cheapest-price-finder/backend/.venv
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

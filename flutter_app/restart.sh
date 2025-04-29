@@ -1,7 +1,7 @@
 #!/bin/bash
 # コンテナを再起動するスクリプト
 
-cd /home/eitafeir/src/cheapest-price-finder/
+cd ~/src/cheapest-price-finder/
 
 # コンテナを停止
 docker-compose down flutter_app

@@ -1,4 +1,4 @@
-#!/home/eitafeir/src/cheapest-price-finder/backend/.venv/bin/python3
+#!~/src/cheapest-price-finder/backend/.venv/bin/python3
 
 import sys
 import json

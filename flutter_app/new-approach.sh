@@ -2,14 +2,14 @@
 # 新しいアプローチでFlutterウェブアプリを構築する
 
 # 作業ディレクトリに移動
-cd /home/eitafeir/src/cheapest-price-finder/
+cd ~/src/cheapest-price-finder/
 
 # コンテナを停止
 echo "Stopping existing containers..."
 docker-compose down flutter_app
 
 # Dockerfileを元のシンプルな形に戻す
-cat > /home/eitafeir/src/cheapest-price-finder/flutter_app/Dockerfile << 'EOF'
+cat > ~/src/cheapest-price-finder/flutter_app/Dockerfile << 'EOF'
 FROM ubuntu:22.04
 
 # 必要なパッケージのインストール
@@ -40,7 +40,7 @@ CMD ["flutter", "run", "-d", "web-server", "--web-port=8080", "--web-hostname=0.
 EOF
 
 # docker-compose.ymlを修正
-cat > /home/eitafeir/src/cheapest-price-finder/docker-compose.yml << 'EOF'
+cat > ~/src/cheapest-price-finder/docker-compose.yml << 'EOF'
 services:
   flutter_app:
     build:
@@ -60,8 +60,8 @@ volumes:
 EOF
 
 # index.htmlを標準的な形に戻す
-mkdir -p /home/eitafeir/src/cheapest-price-finder/flutter_app/web
-cat > /home/eitafeir/src/cheapest-price-finder/flutter_app/web/index.html << 'EOF'
+mkdir -p ~/src/cheapest-price-finder/flutter_app/web
+cat > ~/src/cheapest-price-finder/flutter_app/web/index.html << 'EOF'
 <!DOCTYPE html>
 <html>
 <head>
