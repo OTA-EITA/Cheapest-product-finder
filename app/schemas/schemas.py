@@ -62,6 +62,21 @@ class PriceHistoryResponse(BaseModel):
     class Config:
         orm_mode = True
 
+# 価格分析のスキーマ
+class PriceAnalysisResponse(BaseModel):
+    min_price: float
+    max_price: float
+    avg_price: float
+    median_price: float
+    price_trend: str
+    best_time_to_buy: str
+    price_fluctuation: float
+    price_history_days: int
+    product: ProductResponse
+    
+    class Config:
+        orm_mode = True
+
 # お気に入り関連のスキーマ
 class FavoriteCreate(BaseModel):
     product_id: int
@@ -122,3 +137,9 @@ class SearchResponse(BaseModel):
     query: str
     results: List[SearchResultItem]
     total_results: int
+
+# バーコード検索のスキーマ
+class BarcodeSearchRequest(BaseModel):
+    barcode: str
+    max_results: int = 10
+    include_shipping: bool = True

@@ -26,11 +26,17 @@ class BaseScraper(ABC):
             return None
     
     @abstractmethod
-    def search(self, query):
+    def search(self, query, max_results=10, include_shipping=True, **kwargs):
         """商品検索の実装（サブクラスで実装必須）"""
         pass
     
     @abstractmethod
-    def extract_product_info(self, item):
+    def extract_product_info(self, item, include_shipping=True):
         """商品情報の抽出（サブクラスで実装必須）"""
         pass
+        
+    def search_by_barcode(self, barcode, max_results=10, include_shipping=True, **kwargs):
+        """バーコードから商品を検索するデフォルト実装"""
+        # デフォルトでは通常検索を使用、サブクラスで必要に応じてオーバーライド
+        self.logger.info(f"バーコード検索にデフォルト実装を使用: {barcode}")
+        return self.search(barcode, max_results, include_shipping, **kwargs)

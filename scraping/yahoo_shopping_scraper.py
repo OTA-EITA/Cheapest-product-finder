@@ -9,7 +9,7 @@ class YahooShoppingScraper(BaseScraper):
         super().__init__(user_agent, timeout)
         self.base_url = "https://shopping.yahoo.co.jp/search"
     
-    def search(self, query, max_results=10):
+    def search(self, query, max_results=10, include_shipping=True, **kwargs):
         """Yahoo!ショッピングでの商品検索"""
         search_url = f"{self.base_url}?p={quote_plus(query)}"
         soup = self.get_page(search_url)
@@ -20,14 +20,14 @@ class YahooShoppingScraper(BaseScraper):
         product_divs = soup.select('div.LoopList__item')
         
         for div in product_divs[:max_results]:
-            product_info = self.extract_product_info(div)
+            product_info = self.extract_product_info(div, include_shipping)
             if product_info:
                 product_info['source'] = 'Yahoo!ショッピング'
                 results.append(product_info)
         
         return results
     
-    def extract_product_info(self, item):
+    def extract_product_info(self, item, include_shipping=True):
         """商品情報の抽出"""
         try:
             # 商品名
@@ -56,8 +56,10 @@ class YahooShoppingScraper(BaseScraper):
             img_url = img_elem['src'] if img_elem else None
             
             # 送料情報
-            shipping_elem = item.select_one('span._3izCJ6Kc-TF4')
-            shipping = shipping_elem.text.strip() if shipping_elem else None
+            shipping_info = None
+            if include_shipping:
+                shipping_elem = item.select_one('span._3izCJ6Kc-TF4')
+                shipping_info = shipping_elem.text.strip() if shipping_elem else "送料情報なし"
             
             return {
                 'name': name,
@@ -65,8 +67,30 @@ class YahooShoppingScraper(BaseScraper):
                 'price': price,
                 'price_text': price_text,
                 'img_url': img_url,
-                'shipping': shipping,
+                'shipping': shipping_info,
             }
         except Exception as e:
             self.logger.error(f"Error extracting product info: {str(e)}")
             return None
+    
+    def search_by_barcode(self, barcode, max_results=10, include_shipping=True, **kwargs):
+        """バーコードで商品を検索するYahoo!ショッピング専用実装"""
+        # JANコード/ISBNでの検索
+        if barcode.isdigit() and (len(barcode) == 13 or len(barcode) == 10):
+            search_url = f"{self.base_url}?p={barcode}&jan={barcode}"
+            soup = self.get_page(search_url)
+            if soup:
+                results = []
+                product_divs = soup.select('div.LoopList__item')
+                
+                for div in product_divs[:max_results]:
+                    product_info = self.extract_product_info(div, include_shipping)
+                    if product_info:
+                        product_info['source'] = 'Yahoo!ショッピング'
+                        results.append(product_info)
+                
+                if results:
+                    return results
+        
+        # 通常検索にフォールバック
+        return super().search_by_barcode(barcode, max_results, include_shipping, **kwargs)
